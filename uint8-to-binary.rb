@@ -9,9 +9,9 @@ class Integer
   end
 end
 
-DATA_SET_UINT8 = "/Users/aman/Desktop/Synapse/fer2013/fer2013.csv"
-DATA_SET_BIN   = "/Users/aman/Desktop/Synapse/fer2013/fer2013.bin"
-# DATA_SET_BIN   = "/Users/aman/Desktop/Synapse/fer2013/test_batch.bin" # Test data
+DATA_SET_UINT8 = "fer2013.csv"
+DATA_SET_BIN   = "fer2013.bin"
+# DATA_SET_BIN   = "test_batch.bin" # Test data
 
 
 puts "Reading csv ..."
@@ -27,8 +27,29 @@ File.open(DATA_SET_BIN, 'wb') do |output|
 
     if usage == 'Training'
     # if usage == 'PublicTest' # Test data
+      actual_emotion = emotion
+
+      if emotion == '0' || emotion == '1'
+        emotion = '0' # angry
+
+      elsif emotion == '2'
+        emotion = '1' # fear
+
+      elsif emotion == '3' || emotion == '5'
+        emotion = '2' # happy
+
+      elsif emotion == '4' || emotion == '6'
+        emotion = '3' # sad
+
+      else
+        puts "Invalid emotion -> #{emotion}"
+        break
+      end
+
       arr =  [emotion.to_i.to_bin(8)] + pixels.split(' ').map { |i| i.to_i.to_bin(8) }
-      puts "#{ctr} : #{emotion} | #{pixels[0..10]} ... | #{usage} | bytes=#{arr.count}"
+
+
+      puts "#{ctr} : #{actual_emotion} -> #{emotion} | #{pixels[0..10]} ... | #{usage} | bytes=#{arr.count}"
       output.write [arr.join].pack("B*")
 
       ctr += 1
